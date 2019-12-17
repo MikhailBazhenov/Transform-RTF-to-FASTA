@@ -1,0 +1,76 @@
+Public Class Form1
+    Dim MyObject As New DataObject
+    Dim Sequence(2, 2000) As String
+    Dim Seqnum As Integer
+    Dim Result As String
+    Dim Rtf As String
+    Dim Bl As Int32
+    Dim El As Int32
+    Dim LP As Int32
+    Dim Name1 As String
+    Dim Strokabp As String
+    Dim Symbol As String
+    Dim Stroka As String
+    Dim l As String
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Result = ""
+        Seqnum = 0
+        For k = 1 To 1000
+            Sequence$(1, k) = ""
+            Sequence$(2, k) = ""
+        Next k
+
+        Rtf$ = My.Computer.Clipboard.GetText()
+        If Rtf$ = "" Then GoTo 6
+        Rtf$ = Rtf$ + Chr(13) + Chr(10)
+        Bl = 1
+        El = 1
+        LP = Len(Rtf$)
+
+        For i = 1 To LP
+            If Mid(Rtf$, i, 1) = Chr(10) Then El = i : l$ = Mid(Rtf$, Bl, El - Bl - 1) : Bl = i + 1 : Call Line_to_fasta(l$)
+        Next i
+
+        For p = 0 To Seqnum
+            Strokabp$ = ""
+            Stroka$ = Sequence$(2, p)
+            For j = 1 To Len(Stroka$)
+                Symbol$ = Mid$(Stroka$, j, 1)
+                If Symbol$ = " " Then GoTo 5
+                If Symbol$ = "." Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "1" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "2" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "3" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "4" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "5" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "6" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "7" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "8" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "9" Then Strokabp$ = Strokabp$ + "-" : GoTo 5
+                If Symbol$ = "0" Then Strokabp$ = Strokabp$ + "-" Else Strokabp$ = Strokabp$ + Symbol$
+5:
+            Next j
+            Sequence$(2, p) = Strokabp$
+        Next p
+
+        For n = 0 To Seqnum
+            If (n > 0) Then Result$ = Result$ + ">" + Sequence$(1, n) + Chr(13) + Chr(10) + Sequence$(2, n) + Chr(13) + Chr(10)
+        Next n
+
+        My.Computer.Clipboard.SetText(Result$)
+6:
+    End Sub
+    Private Sub Line_to_fasta(A$)
+        If A$ = "" Then GoTo 10
+        Name1$ = Mid$(A$, 1, 8)
+        For M = 0 To Seqnum
+            If Sequence$(1, M) = Name1$ Then Sequence(2, M) = Sequence(2, M) + Mid$(A$, 9, Len(A$) - 8) : GoTo 10
+        Next M
+        Seqnum = Seqnum + 1 : Sequence$(1, Seqnum) = Name1$ : Sequence$(2, Seqnum) = Mid$(A$, 9, Len(A$) - 8)
+10:
+    End Sub
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+End Class
